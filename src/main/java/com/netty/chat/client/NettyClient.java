@@ -38,11 +38,12 @@ public class NettyClient {
         Channel channel = bootstrap.connect(WS_HOST, WS_PORT).channel();
         if (channel != null){
             System.out.println("connect success");
-        }
-        channel.writeAndFlush(Arrays.asList("1","2","3"));
-        Scanner sc = new Scanner(System.in);
-        while (sc.hasNextLine()){
-            channel.writeAndFlush(sc.nextLine());
+            Scanner sc = new Scanner(System.in);
+            while (sc.hasNextLine()){
+                channel.writeAndFlush(sc.nextLine());
+            }
+        }else {
+            System.out.println("connect fail");
         }
     }
 }
