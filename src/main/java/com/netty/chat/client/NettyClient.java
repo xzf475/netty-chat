@@ -23,7 +23,7 @@ public class NettyClient {
                 .channel(NioSocketChannel.class)
                 .handler(new ClientChannelInitializer());
 
-        Channel channel = bootstrap.connect("47.107.231.65", 8212).channel();
+        Channel channel = bootstrap.connect("127.0.0.1", 8212).channel();
         if (channel != null){
             System.out.println("connect success");
         }
