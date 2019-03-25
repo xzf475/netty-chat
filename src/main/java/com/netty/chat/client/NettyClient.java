@@ -4,6 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -15,6 +16,17 @@ import java.util.Scanner;
  * @date 2019-03-14 17:04
  */
 public class NettyClient {
+
+    /**
+     * 对应服务器的公有地址
+     */
+    public static final String WS_HOST = "127.0.0.1" ;
+
+    /**
+     * 服务器的端口
+     */
+    public static final int WS_PORT = 8212;
+
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = new Bootstrap();
         NioEventLoopGroup group = new NioEventLoopGroup();
@@ -23,7 +35,7 @@ public class NettyClient {
                 .channel(NioSocketChannel.class)
                 .handler(new ClientChannelInitializer());
 
-        Channel channel = bootstrap.connect("127.0.0.1", 8212).channel();
+        Channel channel = bootstrap.connect(WS_HOST, WS_PORT).channel();
         if (channel != null){
             System.out.println("connect success");
         }
