@@ -6,7 +6,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -37,10 +39,9 @@ public class NettyClient {
 
         Channel channel = bootstrap.connect(WS_HOST, WS_PORT).channel();
         if (channel != null){
-            System.out.println("connect success");
             Scanner sc = new Scanner(System.in);
             while (sc.hasNextLine()){
-                channel.writeAndFlush(sc.nextLine());
+                channel.writeAndFlush(channel.id() + ": " + sc.nextLine() );
             }
         }else {
             System.out.println("connect fail");

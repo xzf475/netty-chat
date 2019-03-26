@@ -17,7 +17,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
-        //打印服务端的发送数据
-        logger.info(ctx.channel().id() +":"+ s);
+        if ("connect success".equals(s)){
+            //接收连接成功包
+            ctx.channel().writeAndFlush(ctx.channel().id() + ": 加入聊天室。");
+        }else {
+            //打印服务端的发送数据
+            logger.info(s);
+        }
     }
 }

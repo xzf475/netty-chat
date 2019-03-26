@@ -22,30 +22,28 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private WebSocketServerHandshaker webSocketServerHandshaker;
 
-    private Map<String,String> userMap = new HashMap<>();
+    //private Map<String,String> userMap = new HashMap<>();
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Object msg) {
-        //logger.info(msg);
-        broadcastWsMsg( ctx, (String) msg );
+        NettyConfig.group.stream()
+                .forEach(channel -> {
+                    channel.writeAndFlush(msg);
+                });
+        logger.info(ctx.channel().id() +":"+ msg);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        logger.info("channelActive>>>>>>>> " + ctx.channel().id());
+        logger.info("channelActive >>>>>>>> " + ctx.channel().id());
         NettyConfig.group.add(ctx.channel());
-        userMap.put(ctx.channel().id().asShortText(),null);
-        NettyConfig.group.stream()
-                .filter(channel -> channel.id() != ctx.channel().id())
-                .forEach(channel -> {
-                    channel.writeAndFlush(ctx.channel().id() + " come in");
-                });
-        logger.info(ctx.channel().id() + " come in");
+        //发送连接成功包
+        ctx.channel().writeAndFlush("connect success");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("channelInactive>>>>>>>> " + ctx.channel().id());
+        logger.info("channelInactive >>>>>>>> " + ctx.channel().id());
         NettyConfig.group.remove(ctx.channel());
     }
 
@@ -61,13 +59,5 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         ctx.close();
     }
 
-    private void broadcastWsMsg(ChannelHandlerContext ctx, String msg) {
-        NettyConfig.group.stream()
-                .filter(channel -> channel.id() != ctx.channel().id())
-                .forEach(channel -> {
-                    channel.writeAndFlush(ctx.channel().id() +":"+ msg);
-                });
-        logger.info(ctx.channel().id() +":"+ msg);
-    }
 
 }
